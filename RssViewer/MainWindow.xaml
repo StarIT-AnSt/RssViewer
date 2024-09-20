@@ -1,0 +1,39 @@
+﻿<Window x:Class="RssViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+
+        Title="MainWindow"
+
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
+    <Window.Resources>
+        <XmlDataProvider x:Key="Rss"
+                         Source="https://habr.com/ru/rss/articles/" />
+    </Window.Resources>
+
+    <DockPanel DataContext="{Binding Source={StaticResource Rss}, XPath=/rss/channel/item}"
+               LastChildFill="True">
+        <TextBox DockPanel.Dock="Top"
+                 Text="{Binding Source={StaticResource Rss},
+                                BindsDirectlyToSource=True,
+                                Path=Source,
+                                UpdateSourceTrigger=PropertyChanged}" />
+
+        <StackPanel DockPanel.Dock="Top"
+                    Orientation="Horizontal">
+            <Image Source="{Binding XPath=/rss/channel/image/url}"
+                   Width="75" />
+            <Label Content="{Binding XPath=/rss/channel/title}" />
+        </StackPanel>
+        <Label DockPanel.Dock="Top"
+               Content="{Binding XPath=/rss/channel/description}" />
+
+        <ListBox DockPanel.Dock="Left"
+                 DisplayMemberPath="title"
+                 ItemsSource="{Binding}"
+                 IsSynchronizedWithCurrentItem="True"
+                 Width="500" />
+        <wv2:WebView2 Source="{Binding XPath=link}" />
+    </DockPanel>
+</Window>
